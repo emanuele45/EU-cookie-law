@@ -1,0 +1,39 @@
+<?xml version="1.0"?>
+<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
+<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+	<id>emanuele:eu_cookie_law</id>
+	<name>EU cookie law</name>
+	<version>0.1.0</version>
+	<license><!--
+/**
+ * EU cookie law (ECL)
+ *
+ * @package ECL
+ * @author emanuele
+ * @copyright 2012 emanuele, Simple Machines
+ * @license http://www.simplemachines.org/about/smf/license.php BSD
+ *
+ * @version 0.1.0
+ */
+--></license>
+	<type>modification</type>
+	<install for="2.0 - 2.0.99">
+		<modification>modification.xml</modification>
+		<modification>lang.xml</modification>
+		<modification>lang-utf8.xml</modification>
+		<require-file name="Subs-EclWarning.php" destination="$sourcedir" />
+		<require-file name="ecl_privacynotice.txt" destination="$boarddir" />
+		<require-file name="EclWarning.template.php" destination="$themedir" />
+		<code>install.php</code>
+	</install>
+	<uninstall for="2.0 - 2.0.99">
+		<remove-file name="$sourcedir/Subs-EclWarning.php" />
+		<remove-file name="$boarddir/ecl_privacynotice.txt" />
+		<remove-file name="$themedir/EclWarning.template.php" />
+		<modification reverse="true">modification.xml</modification>
+		<modification reverse="true">lang.xml</modification>
+		<modification reverse="true">lang-utf8.xml</modification>
+		<redirect url="?action=admin;area=packages" />
+		<code>install.php</code>
+	</uninstall>
+</package-info>

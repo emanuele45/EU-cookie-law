@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+	<id>emanuele:eu_cookie_law</id>
+	<version>0.1.0</version>
+	<license><!--
+/**
+ * EU cookie law (ECL)
+ *
+ * @package ECL
+ * @author emanuele
+ * @copyright 2012 emanuele, Simple Machines
+ * @license http://www.simplemachines.org/about/smf/license.php BSD
+ *
+ * @version 0.1.0
+ */
+--></license>
+	<file name="$languagedir/Modifications.english.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+$txt['ecl_main_notice'] = $context['forum_name'] . ' would like to place cookies on your computer to help us make this website better. To find out more about the cookies, see our <a href="' . $scripturl . '?action=privacynotice">privacy notice</a>.';
+$txt['ecl_accept_how_to'] = 'To accept the cookie click <a href="{ACCEPTCOOKIES}">here</a>, or please <a href="' . $scripturl . '?action=login">login</a> or <a href="' . $scripturl . '?action=register">register</a>.';
+$txt['ecl_action_disabled'] = 'You cannot {ACTION} until you have read our <a href="' . $scripturl . '?action=privacynotice">privacy notice</a> and accepted to <a href="{ACCEPTCOOKIES}">allow the forum to store cookies</a> on your computer.';
+
+$txt['ecl_coppa'] = 'register';
+$txt['ecl_login'] = 'login';
+$txt['ecl_login2'] = 'login';
+$txt['ecl_register'] = 'register';
+$txt['ecl_register2'] = 'register';
+$txt['ecl_collapse'] = 'collapse categories';
+$txt['ecl_deletemsg'] = 'delete messages';
+$txt['ecl_editpoll'] = 'edit polls';
+$txt['ecl_editpoll2'] = 'edit polls';
+$txt['ecl_mergetopics'] = 'merge topics';
+$txt['ecl_moderate'] = 'moderate';
+$txt['ecl_movetopic'] = 'moderate';
+$txt['ecl_movetopic2'] = 'move topics';
+$txt['ecl_post'] = 'post';
+$txt['ecl_post2'] = 'post';
+$txt['ecl_quickmod'] = 'moderate';
+$txt['ecl_quickmod2'] = 'moderate';
+$txt['ecl_removepoll'] = 'remove polls';
+$txt['ecl_removetopic2'] = 'remove topics';
+$txt['ecl_restoretopic'] = 'restore topics';
+$txt['ecl_splittopics'] = 'split topics';
+$txt['ecl_vote'] = 'vote';
+]]></add>
+		</operation>
+	</file>
+</modification>

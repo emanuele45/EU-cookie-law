@@ -1,0 +1,75 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+
+	<id>emanuele:eu_cookie_law</id>
+	<version>0.1.0</version>
+	<license><!--
+/**
+ * EU cookie law (ECL)
+ *
+ * @package ECL
+ * @author emanuele
+ * @copyright 2012 emanuele, Simple Machines
+ * @license http://www.simplemachines.org/about/smf/license.php BSD
+ *
+ * @version 0.1.0
+ */
+--></license>
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="replace"><![CDATA[
+	$context['session_var'] = $_SESSION['session_var'];
+	$context['session_id'] = $_SESSION['session_value'];
+]]></search>
+			<add><![CDATA[
+	$context['session_var'] = isset($_SESSION['session_var']) ? $_SESSION['session_var'] : '';
+	$context['session_id'] = isset($_SESSION['session_value']) ? $_SESSION['session_value'] : '';
+]]></add>
+		</operation>
+		<operation>
+			<search position="before"><![CDATA[
+	global $HTTP_SESSION_VARS, $modSettings, $boardurl, $sc;
+]]></search>
+			<add><![CDATA[
+	if (!ecl_authorized_cookies())
+		return;
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/LogInOut.php">
+		<operation>
+			<search position="after"><![CDATA[
+		// Some whitelisting for login_url...
+]]></search>
+			<add><![CDATA[
+		setcookie('ecl_auth', 1);
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Subs-Auth.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		session_destroy();
+]]></search>
+			<add><![CDATA[
+		if (ecl_authorized_cookies())
+			session_destroy();
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Security.php">
+		<operation>
+			<search position="replace"><![CDATA[
+		setcookie($cookiename . '_', implode(',', $_SESSION['ban']['cannot_access']['ids']), time() + 3153600, $cookie_url[1], $cookie_url[0], 0);
+]]></search>
+			<add><![CDATA[
+		if (ecl_authorized_cookies())
+			setcookie($cookiename . '_', implode(',', $_SESSION['ban']['cannot_access']['ids']), time() + 3153600, $cookie_url[1], $cookie_url[0], 0);
+]]></add>
+		</operation>
+	</file>
+</modification>
