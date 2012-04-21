@@ -85,7 +85,8 @@ function ecl_warning_add_theme_elements ()
 			padding-right: 0;
 		}
 	</style>';
-		$context['ecl_accept_cookies'] = $_SERVER['REQUEST_URL'] . (strpos($_SERVER['REQUEST_URL'], '?') !== false ? ';' : '?') . 'cookieaccept';
+		$context['ecl_accept_cookies'] = $scripturl .'?'. http_build_query(array_merge($_GET, array('cookieaccept' => '')));
+		call_integration_hook('integrate_fix_url', array(&$context['ecl_accept_cookies']));
 		loadtemplate('EclWarning');
 		$context['ecl_main_notice'] = str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_main_notice']) . (!empty($modSettings['ecl_strict_interpretation']) ? '' : '<br />' . str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_accept_how_to']));
 		$context['template_layers'][] = 'ecl_warning';
@@ -106,7 +107,7 @@ function ecl_authorized_cookies ()
 		$storeCookies = true;
 	elseif (isset($_GET['cookieaccept']))
 	{
-		setcookie('ecl_auth', 1);
+		setcookie('ecl_auth', 1, 0, '/');
 		$storeCookies = true;
 	}
 	else
