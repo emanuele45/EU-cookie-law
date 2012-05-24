@@ -15,7 +15,7 @@ if (!defined('SMF'))
 
 function ecl_warning_add_action ($actionArray)
 {
-	global $modSettings, $txt, $context;
+	global $modSettings, $txt, $context, $sourcedir;
 
 	$actionArray['privacynotice'] = array('Subs.php', 'EclPrivacyNotice');
 
@@ -58,13 +58,26 @@ function ecl_warning_add_action ($actionArray)
 			}
 	}
 
+	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'register')
+	{
+		if (empty($_POST['accept_agreement']))
+		{
+			$modSettings['requireAgreement'] = true;
+			EclPrivacyNotice(true);
+		}
+		else
+		{
+			ecl_authorized_cookies(true);
+			loadSession();
+		}
+	}
 }
 
 function ecl_warning_add_theme_elements ()
 {
-	global $context, $txt, $modSettings;
+	global $context, $txt, $modSettings, $scripturl;
 
-	if (!ecl_authorized_cookies())
+	if (!ecl_authorized_cookies() && !(isset($_REQUEST['wap']) || isset($_REQUEST['wap2']) || isset($_REQUEST['imode'])))
 	{
 		$context['html_headers'] .= '
 	<style>
@@ -93,19 +106,19 @@ function ecl_warning_add_theme_elements ()
 	}
 }
 
-function ecl_authorized_cookies ()
+function ecl_authorized_cookies ($override_accept = false)
 {
 	global $cookiename, $modSettings;
 	static $storeCookies;
 
-	if (isset($storeCookies))
+	if (isset($storeCookies) && !$override_accept)
 		return $storeCookies;
 
 	if (isset($_SERVER['HTTP_X_MOZ']) && $_SERVER['HTTP_X_MOZ'] == 'prefetch' && isset($_GET['cookieaccept']))
 		$storeCookies = false;
 	elseif (isset($_COOKIE['ecl_auth']) || isset($_COOKIE[$cookiename]))
 		$storeCookies = true;
-	elseif (isset($_GET['cookieaccept']))
+	elseif (isset($_GET['cookieaccept']) || $override_accept)
 	{
 		setcookie('ecl_auth', 1, 0, '/');
 		$storeCookies = true;
@@ -119,12 +132,14 @@ function ecl_authorized_cookies ()
 	return $storeCookies;
 }
 
-function EclPrivacyNotice ()
+function EclPrivacyNotice ($register = false)
 {
-	global $context, $user_info, $boarddir, $scripturl;
+	global $context, $user_info, $boarddir, $scripturl, $txt;
 
 	loadTemplatE('EclWarning');
-	$context['sub_template'] = 'ecl_privacynotice';
+	if (!$register)
+		$context['sub_template'] = 'ecl_privacynotice';
+	$context['template_layers'][] = 'ecl_privacynotice';
 	// Have we got a localized one?
 	if (file_exists($boarddir . '/ecl_privacynotice.' . $user_info['language'] . '.txt'))
 		$context['ecl_privacynotice'] = parse_bbc(str_replace('{ACCEPTCOOKIES}', $scripturl . '?cookieaccept', file_get_contents($boarddir . '/ecl_privacynotice.' . $user_info['language'] . '.txt')), true, 'ecl_privacynotice_' . $user_info['language']);
@@ -132,6 +147,9 @@ function EclPrivacyNotice ()
 		$context['ecl_privacynotice'] = parse_bbc(str_replace('{ACCEPTCOOKIES}', $scripturl . '?cookieaccept', file_get_contents($boarddir . '/ecl_privacynotice.txt')), true, 'agreement');
 	else
 		$context['ecl_privacynotice'] = '';
+
+	if (!$register)
+		$context['ecl_privacynotice'] .= '<br /><br />' . $txt['ecl_accept_how_to'];
 
 }
 

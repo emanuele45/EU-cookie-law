@@ -25,7 +25,7 @@ function template_ecl_warning_below ()
 
 }
 
-function template_ecl_privacynotice()
+function template_ecl_privacynotice_above ()
 {
 	global $context, $settings, $options, $scripturl, $txt, $modSettings;
 
@@ -38,5 +38,12 @@ function template_ecl_privacynotice()
 			<p>', $context['ecl_privacynotice'], '</p>
 		</div>
 		<span class="lowerframe"><span></span></span>';
-
 }
+function template_ecl_privacynotice_below ()
+{
+}
+function template_ecl_privacynotice ()
+{
+}
+
+?>
