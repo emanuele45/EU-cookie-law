@@ -90,4 +90,80 @@ elseif (isset($_REQUEST['nowap']) && ecl_authorized_cookies())
 ]]></add>
 		</operation>
 	</file>
+
+	<file name="$themedir/scripts/script.js">
+		<operation>
+			<search position="replace"><![CDATA[
+function smc_Cookie(oOptions)
+{
+	this.opt = oOptions;
+	this.oCookies = {};
+	this.init();
+}
+
+smc_Cookie.prototype.init = function()
+{
+	if ('cookie' in document && document.cookie != '')
+	{
+		var aCookieList = document.cookie.split(';');
+		for (var i = 0, n = aCookieList.length; i < n; i++)
+		{
+			var aNameValuePair = aCookieList[i].split('=');
+			this.oCookies[aNameValuePair[0].replace(/^\s+|\s+$/g, '')] = decodeURIComponent(aNameValuePair[1]);
+		}
+	}
+}
+
+smc_Cookie.prototype.get = function(sKey)
+{
+	return sKey in this.oCookies ? this.oCookies[sKey] : null;
+}
+
+smc_Cookie.prototype.set = function(sKey, sValue)
+{
+	document.cookie = sKey + '=' + encodeURIComponent(sValue);
+}
+]]></search>
+			<add><![CDATA[
+// *** smc_Cookie class.
+function smc_Cookie(oOptions)
+{
+	if (!cookies_allowed)
+		return false;
+
+	this.opt = oOptions;
+	this.oCookies = {};
+	this.init();
+}
+
+smc_Cookie.prototype.init = function()
+{
+	if ('cookie' in document && document.cookie != '')
+	{
+		var aCookieList = document.cookie.split(';');
+		for (var i = 0, n = aCookieList.length; i < n; i++)
+		{
+			var aNameValuePair = aCookieList[i].split('=');
+			this.oCookies[aNameValuePair[0].replace(/^\s+|\s+$/g, '')] = decodeURIComponent(aNameValuePair[1]);
+		}
+	}
+}
+
+smc_Cookie.prototype.get = function(sKey)
+{
+	if (cookies_allowed)
+		return sKey in this.oCookies ? this.oCookies[sKey] : null;
+	else
+		return null;
+}
+
+smc_Cookie.prototype.set = function(sKey, sValue)
+{
+	if (cookies_allowed)
+		document.cookie = sKey + '=' + encodeURIComponent(sValue);
+}
+]]></add>
+		</operation>
+	</file>
+
 </modification>

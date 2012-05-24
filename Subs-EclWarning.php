@@ -50,12 +50,14 @@ function ecl_warning_add_action ($actionArray)
 	if (isset($_REQUEST['action']))
 	{
 		if (in_array($_REQUEST['action'], $disabledActionsRelaxed) || (!empty($modSettings['ecl_strict_interpretation']) && in_array($_REQUEST['action'], $disabledActionsStrict)))
+		{
 			// Did you accept to store cookies?
 			if (!ecl_authorized_cookies())
 			{
 				$txt['ecl_action_disabled'] = str_replace(array('{ACCEPTCOOKIES}', '{ACTION}'), array($context['ecl_accept_cookies'], $txt['ecl_' . $_REQUEST['action']]), $txt['ecl_action_disabled']);
 				fatal_lang_error('ecl_action_disabled', false);
 			}
+		}
 	}
 
 	if (isset($_REQUEST['action']) && $_REQUEST['action'] == 'register')
@@ -97,7 +99,11 @@ function ecl_warning_add_theme_elements ()
 			padding-left: 0;
 			padding-right: 0;
 		}
-	</style>';
+	</style>
+	<script type="text/javascript"><!-- // --><![CDATA[
+		cookies_allowed = ' . (ecl_authorized_cookies() ? '1' : '0') . ';
+	// ]]></script>';
+
 		$context['ecl_accept_cookies'] = $scripturl .'?'. http_build_query(array_merge($_GET, array('cookieaccept' => '')));
 		call_integration_hook('integrate_fix_url', array(&$context['ecl_accept_cookies']));
 		loadtemplate('EclWarning');
