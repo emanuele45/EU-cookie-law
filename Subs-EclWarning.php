@@ -15,9 +15,11 @@ if (!defined('SMF'))
 
 function ecl_warning_add_action ($actionArray)
 {
-	global $modSettings, $txt, $context, $sourcedir;
+	global $modSettings, $txt, $context, $sourcedir, $scripturl;
 
 	$actionArray['privacynotice'] = array('Subs.php', 'EclPrivacyNotice');
+	$context['ecl_accept_cookies'] = $scripturl . '?' . http_build_query(array_merge($_GET, array('cookieaccept' => '1')));
+	$context['ecl_privacy_notice_url'] = $scripturl . '?action=privacynotice' . (WIRELESS ? ';' . WIRELESS_PROTOCOL : '');
 
 	$disabledActionsStrict = array(
 		'coppa',
@@ -54,7 +56,7 @@ function ecl_warning_add_action ($actionArray)
 			// Did you accept to store cookies?
 			if (!ecl_authorized_cookies())
 			{
-				$txt['ecl_action_disabled'] = str_replace(array('{ACCEPTCOOKIES}', '{ACTION}'), array($context['ecl_accept_cookies'], $txt['ecl_' . $_REQUEST['action']]), $txt['ecl_action_disabled']);
+				$txt['ecl_action_disabled'] = str_replace(array('{ACCEPTCOOKIES}', '{ACTION}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $txt['ecl_' . $_REQUEST['action']], $context['ecl_privacy_notice_url']), $txt['ecl_action_disabled']);
 				fatal_lang_error('ecl_action_disabled', false);
 			}
 		}
@@ -104,7 +106,6 @@ function ecl_warning_add_theme_elements ()
 		cookies_allowed = ' . (ecl_authorized_cookies() ? '1' : '0') . ';
 	// ]]></script>';
 
-		$context['ecl_accept_cookies'] = $scripturl .'?'. http_build_query(array_merge($_GET, array('cookieaccept' => '')));
 		call_integration_hook('integrate_fix_url', array(&$context['ecl_accept_cookies']));
 		loadtemplate('EclWarning');
 		$context['ecl_main_notice'] = str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_main_notice']) . (!empty($modSettings['ecl_strict_interpretation']) ? '' : '<br />' . str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_accept_how_to']));
@@ -140,22 +141,23 @@ function ecl_authorized_cookies ($override_accept = false)
 
 function EclPrivacyNotice ($register = false)
 {
-	global $context, $user_info, $boarddir, $scripturl, $txt;
+	global $context, $user_info, $boarddir, $scripturl, $txt, $language;
 
 	loadTemplatE('EclWarning');
 	if (!$register)
 		$context['sub_template'] = 'ecl_privacynotice';
 	$context['template_layers'][] = 'ecl_privacynotice';
+
 	// Have we got a localized one?
 	if (file_exists($boarddir . '/ecl_privacynotice.' . $user_info['language'] . '.txt'))
-		$context['ecl_privacynotice'] = parse_bbc(str_replace('{ACCEPTCOOKIES}', $scripturl . '?cookieaccept', file_get_contents($boarddir . '/ecl_privacynotice.' . $user_info['language'] . '.txt')), true, 'ecl_privacynotice_' . $user_info['language']);
+		$context['ecl_privacynotice'] = parse_bbc(str_replace(array('{ACCEPTCOOKIES}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $context['ecl_privacy_notice_url']), file_get_contents($boarddir . '/ecl_privacynotice.' . $user_info['language'] . '.txt')), true, 'ecl_privacynotice_' . $user_info['language']);
 	elseif (file_exists($boarddir . '/ecl_privacynotice.txt'))
-		$context['ecl_privacynotice'] = parse_bbc(str_replace('{ACCEPTCOOKIES}', $scripturl . '?cookieaccept', file_get_contents($boarddir . '/ecl_privacynotice.txt')), true, 'agreement');
+		$context['ecl_privacynotice'] = parse_bbc(str_replace(array('{ACCEPTCOOKIES}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $context['ecl_privacy_notice_url']), file_get_contents($boarddir . '/ecl_privacynotice.txt')), true, 'ecl_privacynotice_' . $language);
 	else
 		$context['ecl_privacynotice'] = '';
 
 	if (!$register)
-		$context['ecl_privacynotice'] .= '<br /><br />' . $txt['ecl_accept_how_to'];
+		$context['ecl_privacynotice'] .= '<br /><br />' . str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_accept_how_to']);
 
 }
 

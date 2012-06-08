@@ -20,9 +20,9 @@
 		<operation>
 			<search position="end" />
 			<add><![CDATA[
-$txt['ecl_main_notice'] = $context['forum_name'] . ' would like to place cookies on your computer to help us make this website better. To find out more about the cookies, see our <a href="' . $scripturl . '?action=privacynotice">privacy notice</a>.';
+$txt['ecl_main_notice'] = $context['forum_name'] . ' would like to place cookies on your computer to help us make this website better. To find out more about the cookies, see our <a href="{PRIVACYNOTICE}">privacy notice</a>.';
 $txt['ecl_accept_how_to'] = 'To accept the cookie click <a href="{ACCEPTCOOKIES}">here</a>, or please <a href="' . $scripturl . '?action=login">login</a> or <a href="' . $scripturl . '?action=register">register</a>.';
-$txt['ecl_action_disabled'] = 'You cannot {ACTION} until you have read our <a href="' . $scripturl . '?action=privacynotice">privacy notice</a> and accepted to <a href="{ACCEPTCOOKIES}">allow the forum to store cookies</a> on your computer.';
+$txt['ecl_action_disabled'] = 'You cannot {ACTION} until you have read our <a href="{PRIVACYNOTICE}">privacy notice</a> and accepted to <a href="{ACCEPTCOOKIES}">allow the forum to store cookies</a> on your computer.';
 
 $txt['ecl_coppa'] = 'register';
 $txt['ecl_login'] = 'login';
