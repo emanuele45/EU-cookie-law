@@ -108,7 +108,7 @@ function ecl_warning_add_theme_elements ()
 
 		call_integration_hook('integrate_fix_url', array(&$context['ecl_accept_cookies']));
 		loadtemplate('EclWarning');
-		$context['ecl_main_notice'] = str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_main_notice']) . (!empty($modSettings['ecl_strict_interpretation']) ? '' : '<br />' . str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_accept_how_to']));
+		$context['ecl_main_notice'] = str_replace(array('{ACCEPTCOOKIES}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $context['ecl_privacy_notice_url']), $txt['ecl_main_notice']) . (!empty($modSettings['ecl_strict_interpretation']) ? '' : '<br />' . str_replace(array('{ACCEPTCOOKIES}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $context['ecl_privacy_notice_url']), $txt['ecl_accept_how_to']));
 		$context['template_layers'][] = 'ecl_warning';
 	}
 }
@@ -157,7 +157,7 @@ function EclPrivacyNotice ($register = false)
 		$context['ecl_privacynotice'] = '';
 
 	if (!$register)
-		$context['ecl_privacynotice'] .= '<br /><br />' . str_replace('{ACCEPTCOOKIES}', $context['ecl_accept_cookies'], $txt['ecl_accept_how_to']);
+		$context['ecl_privacynotice'] .= '<br /><br />' . str_replace(array('{ACCEPTCOOKIES}', '{PRIVACYNOTICE}'), array($context['ecl_accept_cookies'], $context['ecl_privacy_notice_url']), $txt['ecl_accept_how_to']);
 
 }
 
